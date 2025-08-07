@@ -1,4 +1,40 @@
-function addFraction(f1: any[], f2: any[]) {
+function gcd(a, b) {
+  //公约数
+  while (b !== 0) {
+    [a, b] = [b, a % b];
+  }
+  return Math.abs(a);
+}
+
+function simplifyFraction(fraction) {
+  const [num, den] = fraction;
+
+  // 处理分母为0的情况
+  if (den === 0) {
+    throw new Error('分母不能为零');
+  }
+
+  // 如果分子为0，返回 [0, 1]
+  if (num === 0) {
+    return [0, 1];
+  }
+
+  // 计算最大公约数
+  const divisor = gcd(num, den);
+
+  // 简化分数
+  const simplifiedNum = num / divisor;
+  const simplifiedDen = den / divisor;
+
+  // 确保分母为正数
+  if (simplifiedDen < 0) {
+    return [-simplifiedNum, -simplifiedDen];
+  }
+
+  return [simplifiedNum, simplifiedDen];
+}
+
+function addFraction(f1, f2) {
   // a / b + c / d=  (a*d+b*c) / (b*d)
   const [num1, den1] = f1;
   const [num2, den2] = f2;
@@ -7,7 +43,7 @@ function addFraction(f1: any[], f2: any[]) {
   return [newNum, newDen];
   /* 加法 */
 }
-function subtractFraction(f1: any[], f2: any[]) {
+function subtractFraction(f1, f2) {
   const [num1, den1] = f1;
   const [num2, den2] = f2;
   const newNum = num1 * den2 - num2 * den1;
@@ -15,7 +51,7 @@ function subtractFraction(f1: any[], f2: any[]) {
   return [newNum, newDen];
   /* 减法 */
 }
-function multiplyFraction(f1: any[], f2: any[]) {
+function multiplyFraction(f1, f2) {
   // a / b * c / d=  (a*c) / (b*d)
   const [num1, den1] = f1;
   const [num2, den2] = f2;
@@ -24,9 +60,12 @@ function multiplyFraction(f1: any[], f2: any[]) {
   return [newNum, newDen];
   /* 乘法 */
 }
-function divideFraction(f1: any[], f2: any[]) {
+function divideFraction(f1, f2) {
   const [num1, den1] = f1;
   const [num2, den2] = f2;
+  if (num2 === 0) {
+    throw new Error('除数不能为零');
+  }
   const newNum = num1 * den2;
   const newDen = num2 * den1;
   return [newNum, newDen];
@@ -42,8 +81,8 @@ function fractionToString(fraction) {
 }
 //解析
 
-function parseExpression(expression: string) {
-  const tokens: any[] = []; // 存储解析后的数据
+function parseExpression(expression) {
+  const tokens = []; // 存储解析后的数据
   let i = 0;
   while (i < expression.length) {
     // 遍历整个字符串
@@ -104,7 +143,7 @@ function findInnermostBrackets(tokens) {
 
 function evaluateTokens(tokens) {
   // 先处理乘除
-  const processed: any[] = [];
+  const processed = [];
   for (let i = 0; i < tokens.length; i++) {
     // 遇到乘除运算符
     if (tokens[i] === '*' || tokens[i] === '/') {
@@ -175,4 +214,5 @@ function evaluateExpression(expression) {
   }
 }
 console.log(evaluateExpression('1 + 5 / 6 + (9 - 5) * (3 - 6)'));
-console.log(evaluateExpression('6 / 0'));
+console.log(evaluateExpression('6 + 1 / 0'));
+console.log(evaluateExpression('16 / 6'));
