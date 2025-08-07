@@ -336,3 +336,444 @@ function numSubarrayProductLessThanK(nums: number[], k: number): number {
   }
   return count;
 }
+
+// 给定一个非负整数 x ，计算并返回 x 的平方根，即实现 int sqrt(int x) 函数。
+
+// 正数的平方根有两个，只输出其中的正数平方根。
+
+// 如果平方根不是整数，输出只保留整数的部分，小数部分将被舍去。
+
+// 示例 1：
+
+// 输入: x = 4
+// 输出: 2
+// 示例 2：
+
+// 输入: x = 8
+// 输出: 2
+// 解释: 8 的平方根是 2.82842...，由于小数部分将被舍去，所以返回 2
+
+function mySqrt(x: number): number {
+  for (let i = 0; i < x; i++) {
+    if (i * i === x) {
+      return x;
+    }
+    if (i * i < x && (i + 1) * (i + i) > x) {
+      return i;
+    }
+  }
+
+  return 1;
+}
+
+// 给定两个单词 word1 和 word2 ，返回使得 word1 和  word2 相同所需的最小步数。
+
+// 每步 可以删除任意一个字符串中的一个字符。
+
+// 示例 1：
+
+// 输入: word1 = "sea", word2 = "eat"
+// 输出: 2
+// 解释: 第一步将 "sea" 变为 "ea" ，第二步将 "eat "变为 "ea"
+// 示例  2:
+
+// 输入：word1 = "leetcode", word2 = "etco"
+// 输出：4
+
+// 提示：
+
+// 1 <= word1.length, word2.length <= 500
+// word1 和 word2 只包含小写英文字母
+
+function minDistance(word1: string, word2: string): number {
+  const m = word1.length;
+  const n = word2.length;
+  let dp = new Array(m + 1).fill(0).map(() => new Array(n + 1).fill(0));
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (word1[i - 1] === word2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+  }
+
+  return m + n - 2 * dp[m][n];
+}
+
+// 给你两个单词 word1 和 word2， 请返回将 word1 转换成 word2 所使用的最少操作数  。
+
+// 你可以对一个单词进行如下三种操作：
+
+// 插入一个字符
+// 删除一个字符
+// 替换一个字符
+
+// 示例 1：
+
+// 输入：word1 = "horse", word2 = "ros"
+// 输出：3
+// 解释：
+// horse -> rorse (将 'h' 替换为 'r')
+// rorse -> rose (删除 'r')
+// rose -> ros (删除 'e')
+// 示例 2：
+
+// 输入：word1 = "intention", word2 = "execution"
+// 输出：5
+// 解释：
+// intention -> inention (删除 't')
+// inention -> enention (将 'i' 替换为 'e')
+// enention -> exention (将 'n' 替换为 'x')
+// exention -> exection (将 'n' 替换为 'c')
+// exection -> execution (插入 'u')
+
+function minDistance1(word1: string, word2: string): number {
+  const m = word1.length;
+  const n = word2.length;
+  const dp = new Array(m + 1).fill(0).map((item) => new Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) {
+    dp[i][0] = i; // 初始化第一列
+  }
+
+  for (let j = 0; j <= n; j++) {
+    dp[0][j] = j; // 初始化第一行
+  }
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (word1[i - 1] === word2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1, // 删除 word1[i-1]
+          dp[i][j - 1] + 1, // 插入 word2[j-1]
+          dp[i - 1][j - 1] + 1 // 替换 word1[i-1] 为 word2[j-1]
+        );
+      }
+    }
+  }
+
+  return dp[m][n];
+}
+
+// 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
+
+// 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+
+// 示例 1：
+
+// 输入：nums = [3,2,1,5,6,4], k = 2
+// 输出：5
+// 示例 2：
+
+// 输入：nums = [3,2,3,1,2,4,5,5,6], k = 4
+// 输出：4
+// const quickSelect = (nums:number,left,right,k) =>{
+//       if(left===right){
+//         return nums[left]
+//       }
+//       const pivotIndex = partition(nums, left, right);
+
+//       if(pivotIndex===k){
+//         return nums[k]
+//       }
+//       if(pivotIndex>k){
+//         return quickSelect(nums,left,pivotIndex-1,k)
+//       }
+//       return quickSelect(nums,pivotIndex+1,right,k)
+// }
+// function findKthLargest(nums: number[], k: number): number {
+//     const n = nums.length
+
+//     //第N-k+1小 转换成
+//     return quickSelect(nums,0,n-1,n-k)
+// };
+
+// 给你两个按 非递减顺序 排列的整数数组 nums1 和 nums2，另有两个整数 m 和 n ，分别表示 nums1 和 nums2 中的元素数目。
+
+// 请你 合并 nums2 到 nums1 中，使合并后的数组同样按 非递减顺序 排列。
+
+// 注意：最终，合并后数组不应由函数返回，而是存储在数组 nums1 中。为了应对这种情况，nums1 的初始长度为 m + n，其中前 m 个元素表示应合并的元素，后 n 个元素为 0 ，应忽略。nums2 的长度为 n 。
+
+// 示例 1：
+
+// 输入：nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
+// 输出：[1,2,2,3,5,6]
+// 解释：需要合并 [1,2,3] 和 [2,5,6] 。
+// 合并结果是 [1,2,2,3,5,6] ，其中斜体加粗标注的为 nums1 中的元素。
+// 示例 2：
+
+// 输入：nums1 = [1], m = 1, nums2 = [], n = 0
+// 输出：[1]
+// 解释：需要合并 [1] 和 [] 。
+// 合并结果是 [1] 。
+// 示例 3：
+
+// 输入：nums1 = [0], m = 0, nums2 = [1], n = 1
+// 输出：[1]
+// 解释：需要合并的数组是 [] 和 [1] 。
+// 合并结果是 [1] 。
+// 注意，因为 m = 0 ，所以 nums1 中没有元素。nums1 中仅存的 0 仅仅是为了确保合并结果可以顺利存放到 nums1 中。
+
+/**
+ Do not return anything, modify nums1 in-place instead.
+ */
+//  [1,2,3,0,0,0],
+//  [2,5,6]
+function merge(nums1: number[], m: number, nums2: number[], n: number): void {
+  let i = m - 1;
+  let j = n - 1;
+  let k = m + n - 1;
+  while (i >= 0 && j >= 0) {
+    if (nums1[i] > nums2[j]) {
+      nums1[k] = nums1[i];
+      i--;
+    } else {
+      nums1[k] = nums2[j];
+      j--;
+    }
+
+    k--;
+  }
+}
+
+// 977. 有序数组的平方
+// 简单
+// 相关标签
+// premium lock icon
+// 相关企业
+// 给你一个按 非递减顺序 排序的整数数组 nums，返回 每个数字的平方 组成的新数组，要求也按 非递减顺序 排序。
+
+// 示例 1：
+
+// 输入：nums = [-4,-1,0,3,10]
+// 输出：[0,1,9,16,100]
+// 解释：平方后，数组变为 [16,1,0,9,100]
+// 排序后，数组变为 [0,1,9,16,100]
+// 示例 2：
+
+// 输入：nums = [-7,-3,2,3,11]
+// 输出：[4,9,9,49,121]
+
+function sortedSquares(nums: number[]): number[] {
+  const n = nums.length;
+  const result = new Array(n);
+  let left = 0;
+  let right = n - 1;
+  let index = n - 1; // 从结果数组末尾开始填充
+  while (right >= left) {
+    const leftSquare = nums[left] * nums[left];
+    const rightSquare = nums[right] * nums[right];
+
+    if (rightSquare > leftSquare) {
+      result[index] = rightSquare;
+      right--;
+    } else {
+      result[index] = leftSquare;
+      left++;
+    }
+    index--;
+  }
+  return result;
+}
+
+// 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+
+// 有效字符串需满足：
+
+// 左括号必须用相同类型的右括号闭合。
+// 左括号必须以正确的顺序闭合。
+// 每个右括号都有一个对应的相同类型的左括号。
+
+// 示例 1：
+
+// 输入：s = "()"
+
+// 输出：true
+
+// 示例 2：
+
+// 输入：s = "()[]{}"
+
+// 输出：true
+
+// 示例 3：
+
+// 输入：s = "(]"
+
+// 输出：false
+
+// 示例 4：
+
+// 输入：s = "([])"
+
+// 输出：true
+
+// 示例 5：
+
+// 输入：s = "([)]"
+
+// 输出：false
+
+function isValid(s: string): boolean {
+  const stack: string[] = [];
+  const charMapping = {
+    ')': '(',
+    ']': '[',
+    '}': '{',
+  };
+  for (let i = 0; i < s.length; i++) {
+    const char = s[i];
+    if (['(', '{', '['].includes(char)) {
+      stack.push(char);
+    } else {
+      const top = stack.pop();
+      if (top !== charMapping[char]) {
+        return false;
+      }
+    }
+  }
+
+  return stack.length === 0;
+}
+
+// 给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。
+
+// 一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+
+// 例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。
+// 两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
+
+// 示例 1：
+
+// 输入：text1 = "abcde", text2 = "ace"
+// 输出：3
+// 解释：最长公共子序列是 "ace" ，它的长度为 3 。
+// 示例 2：
+
+// 输入：text1 = "abc", text2 = "abc"
+// 输出：3
+// 解释：最长公共子序列是 "abc" ，它的长度为 3 。
+// 示例 3：
+
+// 输入：text1 = "abc", text2 = "def"
+// 输出：0
+// 解释：两个字符串没有公共子序列，返回 0 。
+
+function longestCommonSubsequence(text1: string, text2: string): number {
+  let m = text1.length;
+  let n = text2.length;
+  const dp = new Array(m + 1).fill(0).map((item) => new Array(n + 1).fill(0));
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (text1[i - 1] === text2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+  }
+
+  return dp[m][n];
+}
+
+// 给你一个大小为 m x n 的整数矩阵 mat 和一个整数 target 。
+
+// 从矩阵的 每一行 中选择一个整数，你的目标是 最小化 所有选中元素之 和 与目标值 target 的 绝对差 。
+
+// 返回 最小的绝对差 。
+
+// a 和 b 两数字的 绝对差 是 a - b 的绝对值。
+
+// 输入：mat = [[1,2,3],[4,5,6],[7,8,9]], target = 13
+// 输出：0
+// 解释：一种可能的最优选择方案是：
+// - 第一行选出 1
+// - 第二行选出 5
+// - 第三行选出 7
+// 所选元素的和是 13 ，等于目标值，所以绝对差是 0 。
+
+function minimizeTheDifference(mat: number[][], target: number): number {
+  const m = mat.length;
+  const n = mat[0].length;
+  let maxSum = 1000;
+  let dp = new Array(m).fill(0).map((item) => new Array(maxSum).fill(Infinity));
+
+  for (let j = 0; j < n; j++) {
+    const sum = mat[0][j];
+    dp[0][sum] = Math.abs(target - sum);
+  }
+
+  //   mat[0] = [1, 2, 3], target = 13
+
+  // dp[0][1] = |1 - 13| = 12  // 选择1，差值为12
+  // dp[0][2] = |2 - 13| = 11  // 选择2，差值为11
+  // dp[0][3] = |3 - 13| = 10  // 选择3，差值为10
+
+  // dp[i][sum] = min(dp[i-1][prevSum] + |sum - target|)
+  for (let i = 1; i < m; i++) {
+    for (let preSum = 0; preSum < maxSum; preSum++) {
+      if (dp[i - 1][preSum] === Infinity) continue;
+      for (let j = 0; j < n; j++) {
+        const newSum = preSum + mat[i][j];
+        dp[i][newSum] = Math.min(dp[i][newSum], dp[i - 1][preSum]);
+      }
+    }
+  }
+  let result = Infinity;
+  for (let sum = 0; sum < maxSum; sum++) {
+    if (dp[m - 1][sum] !== Infinity) {
+      result = Math.min(result, Math.abs(sum - target));
+    }
+  }
+
+  return result;
+}
+
+// 给你一个 m x n 的整数矩阵 points （下标从 0 开始）。一开始你的得分为 0 ，你想最大化从矩阵中得到的分数。
+
+// 你的得分方式为：每一行 中选取一个格子，选中坐标为 (r, c) 的格子会给你的总得分 增加 points[r][c] 。
+
+// 然而，相邻行之间被选中的格子如果隔得太远，你会失去一些得分。对于相邻行 r 和 r + 1 （其中 0 <= r < m - 1），选中坐标为 (r, c1) 和 (r + 1, c2) 的格子，你的总得分 减少 abs(c1 - c2) 。
+
+// 请你返回你能得到的 最大 得分。
+
+// abs(x) 定义为：
+
+// 如果 x >= 0 ，那么值为 x 。
+// 如果 x < 0 ，那么值为 -x 。
+
+// 输入：points = [[1,2,3]
+//                [1,5,1],
+//                [3,1,1]]
+// 输出：9
+// 解释：
+// 蓝色格子是最优方案选中的格子，坐标分别为 (0, 2)，(1, 1) 和 (2, 0) 。
+// 你的总得分增加 3 + 5 + 3 = 11 。
+// 但是你的总得分需要扣除 abs(2 - 1) + abs(1 - 0) = 2 。
+// 你的最终得分为 11 - 2 = 9 。
+
+function maxPoints(points: number[][]): number {
+  const m = points.length;
+  const n = points[0].length;
+
+  let dp = new Array(m).fill(0).map((item) => new Array(n).fill(0));
+  for (let j = 0; j < n; j++) {
+    dp[0][j] = points[0][j];
+  }
+
+  for (let i = 1; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      for (let k = 0; k < n; k++) {
+        dp[i][j] = Math.max(
+          dp[i][j],
+          points[i][j] + dp[i - 1][k] - Math.abs(k - j)
+        );
+      }
+    }
+  }
+
+  return Math.max(...dp[m - 1]);
+}
